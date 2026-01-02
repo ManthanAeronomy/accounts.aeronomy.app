@@ -200,7 +200,28 @@ npm run lint
 
 ## Deployment
 
-### Vercel (Recommended)
+### Railway
+
+**Quick Start:**
+1. Push code to GitHub
+2. Create new project on [Railway](https://railway.app)
+3. Connect your GitHub repository
+4. Add MongoDB service (or use Atlas)
+5. Set environment variables (see below)
+6. Deploy automatically
+
+**Detailed Guide:** See [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md) for complete step-by-step instructions.
+
+**Required Environment Variables:**
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_...
+CLERK_SECRET_KEY=sk_live_...
+MONGODB_URI=mongodb://... (from Railway MongoDB or Atlas)
+RESEND_API_KEY=re_...
+NEXT_PUBLIC_APP_URL=https://your-app.railway.app
+```
+
+### Vercel (Alternative)
 
 1. Push code to GitHub
 2. Import project in Vercel
@@ -210,10 +231,10 @@ npm run lint
 ### Environment Variables for Production
 
 Ensure all environment variables are set in your deployment platform:
-- Clerk keys
-- MongoDB URI
+- Clerk keys (use production keys: `pk_live_...` and `sk_live_...`)
+- MongoDB URI (from Railway MongoDB service or Atlas)
 - Resend API key
-- App URL
+- App URL (your Railway domain or custom domain)
 
 ## Troubleshooting
 

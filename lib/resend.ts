@@ -1,12 +1,22 @@
 import { Resend } from 'resend'
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error('Please add your Resend API key to .env.local')
+// Only check at runtime, not during build
+const RESEND_API_KEY = process.env.RESEND_API_KEY
+
+if (!RESEND_API_KEY) {
+  // Only warn in runtime, not during build
+  if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
+    console.warn('RESEND_API_KEY is not set. Email functionality will not work.')
+  }
 }
 
-export const resend = new Resend(process.env.RESEND_API_KEY)
+export const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null as any
 
 export async function sendVerificationCode(email: string, code: string, name?: string) {
+  if (!RESEND_API_KEY || !resend) {
+    throw new Error('Resend API key is not configured. Please add RESEND_API_KEY to your environment variables.')
+  }
+
   try {
     await resend.emails.send({
       from: 'Aeronomy <onboarding@aeronomy.com>',
@@ -48,6 +58,11 @@ export async function sendVerificationCode(email: string, code: string, name?: s
 }
 
 export async function sendWelcomeEmail(email: string, name: string) {
+  if (!RESEND_API_KEY || !resend) {
+    console.warn('Resend API key is not configured. Welcome email not sent.')
+    return // Don't throw - email failure shouldn't break account creation
+  }
+
   try {
     await resend.emails.send({
       from: 'Aeronomy <onboarding@aeronomy.com>',
