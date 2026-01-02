@@ -157,7 +157,7 @@ export default function VerifyEmailPage() {
             </div>
             <h1 className="text-3xl font-bold text-white mb-2">Verify Your Email</h1>
             <p className="text-blue-200">
-              We've sent a verification code to
+              We&apos;ve sent a verification code to
             </p>
             <p className="text-white font-semibold mt-1">{email}</p>
           </div>
@@ -208,7 +208,7 @@ export default function VerifyEmailPage() {
             {/* Resend Code */}
             <div className="text-center">
               <p className="text-blue-200 text-sm mb-2">
-                Didn't receive the code?
+                Didn&apos;t receive the code?
               </p>
               <button
                 type="button"

@@ -105,7 +105,7 @@ export default function LoginPage() {
             <h2 className="text-5xl font-bold leading-tight">
               The platform for all your <span className="text-cyan-400">SAF</span> needs;
               <br />
-              <span className="text-white">That's Aero<span className="text-cyan-400">nomy</span>.</span>
+              <span className="text-white">That&apos;s Aero<span className="text-cyan-400">nomy</span>.</span>
             </h2>
           </div>
         </div>
