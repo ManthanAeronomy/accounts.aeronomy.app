@@ -1,10 +1,14 @@
 import mongoose from 'mongoose'
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Please add your Mongo URI to .env.local')
-}
+// Only check at runtime, not during build
+const MONGODB_URI: string | undefined = process.env.MONGODB_URI
 
-const MONGODB_URI: string = process.env.MONGODB_URI
+if (!MONGODB_URI) {
+  // Only throw in runtime, not during build
+  if (typeof window === 'undefined' && process.env.NODE_ENV !== 'test') {
+    console.warn('MONGODB_URI is not set. Database connections will fail.')
+  }
+}
 
 interface MongooseCache {
   conn: typeof mongoose | null
@@ -22,6 +26,10 @@ if (!global.mongoose) {
 }
 
 async function connectDB(): Promise<typeof mongoose> {
+  if (!MONGODB_URI) {
+    throw new Error('Please add your Mongo URI to .env.local or Railway environment variables')
+  }
+
   if (cached.conn) {
     return cached.conn
   }
