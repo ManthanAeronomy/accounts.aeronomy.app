@@ -3,7 +3,7 @@ import { currentUser } from '@clerk/nextjs/server'
 import connectDB from '@/lib/mongodb'
 import VerificationCode from '@/models/VerificationCode'
 import User from '@/models/User'
-import { sendWelcomeEmail } from '@/lib/resend'
+import { sendWelcomeEmail, sendSignInConfirmationEmail } from '@/lib/resend'
 
 // POST /api/auth/verify-code - Verify the code
 export async function POST(request: NextRequest) {
@@ -71,9 +71,10 @@ export async function POST(request: NextRequest) {
       })
       await user.save()
 
-      // Send welcome email
+      // Send welcome email and sign-in confirmation
       const userName = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || email
       await sendWelcomeEmail(email, userName)
+      await sendSignInConfirmationEmail(email, userName, true)
     } else {
       // Update email verification status
       user.emailVerified = true

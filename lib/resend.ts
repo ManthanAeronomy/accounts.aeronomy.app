@@ -69,19 +69,99 @@ export async function sendWelcomeEmail(email: string, name: string) {
       to: email,
       subject: 'Welcome to Aeronomy',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #0284c7;">Welcome to Aeronomy!</h1>
-          <p>Hi ${name},</p>
-          <p>Thank you for joining Aeronomy, the compliance-first procurement platform for Sustainable Aviation Fuel.</p>
-          <p>Your account has been successfully created. You can now start connecting with buyers and sellers in the SAF marketplace.</p>
-          <p>If you have any questions, please don't hesitate to reach out to our support team.</p>
-          <p>Best regards,<br>The Aeronomy Team</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px;">Aeronomy</h1>
+          </div>
+          <div style="background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h2 style="color: #1e293b; margin-top: 0;">Welcome to Aeronomy!</h2>
+            <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+              Hi ${name},
+            </p>
+            <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+              Thank you for joining Aeronomy, the compliance-first procurement platform for Sustainable Aviation Fuel.
+            </p>
+            <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+              Your account has been successfully created. You can now start connecting with buyers and sellers in the SAF marketplace.
+            </p>
+            <div style="margin: 30px 0; text-align: center;">
+              <a href="https://app.aeronomy.co" style="display: inline-block; padding: 12px 24px; background: #0284c7; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600;">Access Your Account</a>
+            </div>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6;">
+              If you have any questions, please don&apos;t hesitate to reach out to our support team.
+            </p>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-top: 30px;">
+              Best regards,<br>
+              <strong>The Aeronomy Team</strong>
+            </p>
+          </div>
         </div>
       `,
     })
   } catch (error) {
     console.error('Error sending welcome email:', error)
     // Don't throw - email failure shouldn't break account creation
+  }
+}
+
+export async function sendSignInConfirmationEmail(email: string, name: string, isNewAccount: boolean = false) {
+  if (!RESEND_API_KEY || !resend) {
+    console.warn('Resend API key is not configured. Sign-in confirmation email not sent.')
+    return // Don't throw - email failure shouldn't break sign-in
+  }
+
+  try {
+    const subject = isNewAccount 
+      ? 'Your Aeronomy account has been created' 
+      : 'Sign-in confirmation - Aeronomy'
+    
+    const content = isNewAccount
+      ? `
+        <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+          Your account has been successfully created and you&apos;ve been signed in. Welcome to Aeronomy!
+        </p>
+        <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+          You can now access the platform and start connecting with buyers and sellers in the SAF marketplace.
+        </p>
+      `
+      : `
+        <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+          You&apos;ve successfully signed in to your Aeronomy account.
+        </p>
+        <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+          If this wasn&apos;t you, please contact our support team immediately.
+        </p>
+      `
+
+    await resend.emails.send({
+      from: 'Aeronomy <onboarding@aeronomy.com>',
+      to: email,
+      subject,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); padding: 30px; border-radius: 10px; margin-bottom: 20px;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px;">Aeronomy</h1>
+          </div>
+          <div style="background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h2 style="color: #1e293b; margin-top: 0;">${isNewAccount ? 'Account Created' : 'Sign-In Confirmation'}</h2>
+            <p style="color: #64748b; font-size: 16px; line-height: 1.6;">
+              Hi ${name},
+            </p>
+            ${content}
+            <div style="margin: 30px 0; text-align: center;">
+              <a href="https://app.aeronomy.co" style="display: inline-block; padding: 12px 24px; background: #0284c7; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600;">Access Your Account</a>
+            </div>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-top: 30px;">
+              Best regards,<br>
+              <strong>The Aeronomy Team</strong>
+            </p>
+          </div>
+        </div>
+      `,
+    })
+  } catch (error) {
+    console.error('Error sending sign-in confirmation email:', error)
+    // Don't throw - email failure shouldn't break sign-in
   }
 }
 

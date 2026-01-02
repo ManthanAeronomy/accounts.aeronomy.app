@@ -108,8 +108,8 @@ export default function VerifyEmailPage() {
         throw new Error(data.error || 'Verification failed')
       }
 
-      // Redirect to dashboard on success
-      router.push('/dashboard')
+      // Redirect to main app on success
+      window.location.href = 'https://app.aeronomy.co'
     } catch (err: any) {
       setError(err.message || 'Verification failed')
       setCode(['', '', '', '', '', ''])

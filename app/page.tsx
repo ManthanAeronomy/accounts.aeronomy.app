@@ -30,7 +30,19 @@ export default function LoginPage() {
 
       if (result.status === 'complete') {
         await setActive({ session: result.createdSessionId })
-        router.push('/verify-email')
+        
+        // Send sign-in confirmation email
+        try {
+          await fetch('/api/auth/sign-in-confirmation', {
+            method: 'POST',
+          })
+        } catch (err) {
+          console.error('Failed to send sign-in confirmation:', err)
+          // Don't block sign-in if email fails
+        }
+        
+        // Redirect to main app
+        window.location.href = 'https://app.aeronomy.co'
       } else {
         console.log('Additional steps required:', result)
       }
@@ -47,7 +59,7 @@ export default function LoginPage() {
       await signIn.authenticateWithRedirect({
         strategy: 'oauth_google',
         redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/verify-email',
+        redirectUrlComplete: 'https://app.aeronomy.co',
       })
     } catch (err) {
       console.error('Google sign-in error:', err)
@@ -60,7 +72,7 @@ export default function LoginPage() {
       await signIn.authenticateWithRedirect({
         strategy: 'oauth_apple',
         redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/verify-email',
+        redirectUrlComplete: 'https://app.aeronomy.co',
       })
     } catch (err) {
       console.error('Apple sign-in error:', err)
@@ -73,7 +85,7 @@ export default function LoginPage() {
       await signIn.authenticateWithRedirect({
         strategy: 'oauth_facebook',
         redirectUrl: '/sso-callback',
-        redirectUrlComplete: '/verify-email',
+        redirectUrlComplete: 'https://app.aeronomy.co',
       })
     } catch (err) {
       console.error('Facebook sign-in error:', err)
